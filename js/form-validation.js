@@ -1,5 +1,4 @@
 // FORM VALIDATION FOR CERTIFICATE REQUESTS
-// This script validates user input before submission
 
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('certificateForm');
@@ -28,7 +27,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     <p><strong>Thank you, ${formData.fullName}!</strong></p>
                     <p>Your request for <strong>${formData.certificateType}</strong> has been received.</p>
                     <p>You will receive a confirmation at <strong>${formData.email}</strong>.</p>
-                    <p class="text-muted small">Request ID: BAR-${Date.now()}</p>
+                    <p class="text-muted small">Request ID: CERT-${Date.now()}</p>
+                    <hr>
+                    <p class="text-muted small">Please wait 2-3 business days for processing.</p>
                 `;
                 
                 modal.show();
@@ -38,6 +39,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Reset form
                 form.reset();
+                
+                // Remove validation styling
+                document.querySelectorAll('.is-valid').forEach(el => {
+                    el.classList.remove('is-valid');
+                });
                 
                 // Hide alert after 5 seconds
                 setTimeout(() => {
@@ -117,6 +123,7 @@ function validateForm() {
 
 function showError(field, message) {
     field.classList.add('is-invalid');
+    field.classList.remove('is-valid');
     const feedback = field.nextElementSibling;
     if (feedback && feedback.classList.contains('invalid-feedback')) {
         feedback.textContent = message;
@@ -133,4 +140,5 @@ function saveRequestToLocal(data) {
     requests.push(data);
     localStorage.setItem('barangayRequests', JSON.stringify(requests));
     console.log('Request saved:', data);
+    console.log('Total requests:', requests.length);
 }

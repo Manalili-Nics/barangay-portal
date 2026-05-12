@@ -12,11 +12,6 @@ header.bg-primary {
     background: linear-gradient(135deg, var(--barangay-green), var(--barangay-blue));
 }
 
-/* Footer styling */
-footer {
-    margin-top: auto;
-}
-
 /* Badge for new announcements */
 .badge-new {
     background-color: var(--barangay-red);
@@ -34,4 +29,28 @@ footer {
     width: 100%;
     height: 5px;
     background: linear-gradient(90deg, #0038a8 0%, #0038a8 50%, #ce1126 50%, #ce1126 100%);
+}
+
+/* Card borders */
+.card {
+    border-top: 4px solid var(--barangay-green);
+}
+
+/* Navbar brand */
+.navbar-brand {
+    font-weight: bold;
+}
+
+/* Footer styling */
+footer {
+    background-color: #1a1a1a !important;
+}
+
+footer a {
+    color: #ffc107;
+    text-decoration: none;
+}
+
+footer a:hover {
+    color: #ffd54f;
 }

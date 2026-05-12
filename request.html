@@ -8,6 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/barangay-theme.css">
 </head>
 <body>
 
@@ -24,80 +25,86 @@
                     <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-home"></i> Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="announcements.html"><i class="fas fa-bullhorn"></i> Announcements</a></li>
                     <li class="nav-item"><a class="nav-link active" href="request.html"><i class="fas fa-file-alt"></i> Request Certificate</a></li>
+                    <li class="nav-item"><a class="nav-link" href="report.html"><i class="fas fa-exclamation-triangle"></i> Report Issue</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container my-5">
-        <div class="row">
-            <div class="col-md-8 mx-auto">
-                <div class="card shadow">
-                    <div class="card-header bg-success text-white">
-                        <h3 class="mb-0"><i class="fas fa-file-certificate"></i> Request a Certificate</h3>
-                    </div>
-                    <div class="card-body">
-                        
-                        <!-- Bootstrap Component #4: ALERT for success message -->
-                        <div id="successAlert" class="alert alert-success d-none">
-                            ✅ Your request has been submitted successfully! Please wait 2-3 business days.
+    <main>
+        <div class="container my-5">
+            <div class="row">
+                <div class="col-md-8 mx-auto">
+                    <div class="card shadow">
+                        <div class="card-header bg-success text-white">
+                            <h3 class="mb-0"><i class="fas fa-file-certificate"></i> Request a Certificate</h3>
                         </div>
-
-                        <!-- Form with JavaScript Validation -->
-                        <form id="certificateForm">
-                            <div class="mb-3">
-                                <label for="fullName" class="form-label">Full Name *</label>
-                                <input type="text" class="form-control" id="fullName" required>
-                                <div class="invalid-feedback">Please enter your full name</div>
+                        <div class="card-body">
+                            
+                            <!-- Alert for success message -->
+                            <div id="successAlert" class="alert alert-success d-none">
+                                ✅ Your request has been submitted successfully! Please wait 2-3 business days.
                             </div>
 
-                            <div class="mb-3">
-                                <label for="address" class="form-label">Address in Barangay *</label>
-                                <input type="text" class="form-control" id="address" required>
-                                <div class="invalid-feedback">Please enter your address</div>
-                            </div>
+                            <!-- Form with JavaScript Validation -->
+                            <form id="certificateForm">
+                                <div class="mb-3">
+                                    <label for="fullName" class="form-label">Full Name *</label>
+                                    <input type="text" class="form-control" id="fullName" required>
+                                    <div class="invalid-feedback">Please enter your full name</div>
+                                </div>
 
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email Address *</label>
-                                <input type="email" class="form-control" id="email" required>
-                                <div class="invalid-feedback">Please enter a valid email</div>
-                            </div>
+                                <div class="mb-3">
+                                    <label for="address" class="form-label">Address in Barangay *</label>
+                                    <input type="text" class="form-control" id="address" required>
+                                    <div class="invalid-feedback">Please enter your address</div>
+                                </div>
 
-                            <div class="mb-3">
-                                <label for="certificateType" class="form-label">Type of Certificate *</label>
-                                <select class="form-select" id="certificateType" required>
-                                    <option value="">Select certificate type</option>
-                                    <option value="Barangay Clearance">Barangay Clearance</option>
-                                    <option value="Certificate of Indigency">Certificate of Indigency</option>
-                                    <option value="Residency Certificate">Residency Certificate</option>
-                                </select>
-                                <div class="invalid-feedback">Please select a certificate type</div>
-                            </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email Address *</label>
+                                    <input type="email" class="form-control" id="email" required>
+                                    <div class="invalid-feedback">Please enter a valid email</div>
+                                </div>
 
-                            <div class="mb-3">
-                                <label for="purpose" class="form-label">Purpose *</label>
-                                <textarea class="form-control" id="purpose" rows="3" required></textarea>
-                                <div class="invalid-feedback">Please state the purpose of your request</div>
-                            </div>
+                                <div class="mb-3">
+                                    <label for="certificateType" class="form-label">Type of Certificate *</label>
+                                    <select class="form-select" id="certificateType" required>
+                                        <option value="">Select certificate type</option>
+                                        <option value="Barangay Clearance">Barangay Clearance</option>
+                                        <option value="Certificate of Indigency">Certificate of Indigency</option>
+                                        <option value="Residency Certificate">Residency Certificate</option>
+                                        <option value="Certificate of Good Moral Character">Certificate of Good Moral Character</option>
+                                        <option value="Barangay Business Clearance/Permit">Barangay Business Clearance/Permit</option>
+                                        <option value="Certificate of First Time Job Seeker">Certificate of First Time Job Seeker</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please select a certificate type</div>
+                                </div>
 
-                            <button type="submit" class="btn btn-success w-100">
-                                <i class="fas fa-paper-plane"></i> Submit Request
-                            </button>
-                        </form>
+                                <div class="mb-3">
+                                    <label for="purpose" class="form-label">Purpose *</label>
+                                    <textarea class="form-control" id="purpose" rows="3" required></textarea>
+                                    <div class="invalid-feedback">Please state the purpose of your request</div>
+                                </div>
 
-                        <!-- Bootstrap Component #5: MODAL for confirmation -->
-                        <div class="modal fade" id="confirmationModal" tabindex="-1">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header bg-success text-white">
-                                        <h5 class="modal-title">Request Confirmed</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                    </div>
-                                    <div class="modal-body" id="modalMessage">
-                                        Your request has been submitted!
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-success w-100">
+                                    <i class="fas fa-paper-plane"></i> Submit Request
+                                </button>
+                            </form>
+
+                            <!-- Modal for confirmation -->
+                            <div class="modal fade" id="confirmationModal" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-success text-white">
+                                            <h5 class="modal-title">Request Confirmed</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body" id="modalMessage">
+                                            Your request has been submitted!
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -106,9 +113,9 @@
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
-    <footer class="bg-dark text-white text-center py-4 mt-5">
+    <footer class="bg-dark text-white text-center py-4">
         <div class="container">
             <p>&copy; 2025 Barangay Mabuhay. Serving the Republic of the Philippines with pride.</p>
         </div>

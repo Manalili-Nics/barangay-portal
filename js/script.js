@@ -1,38 +1,126 @@
 // BARANGAY PORTAL - JAVASCRIPT FUNCTIONALITY
 // This script demonstrates DOM manipulation for the announcements
 
-// Announcement data (simulated from a database)
+// 15 ANNOUNCEMENTS as requested
 const announcements = [
     {
         id: 1,
-        title: "📢 Free Medical Mission",
-        date: "December 15, 2025",
-        description: "Free check-up and medicines at Barangay Hall. 8AM - 5PM",
+        title: "🍽️ Feeding Program",
+        date: "May 20, 2026",
+        description: "Free feeding program for children ages 3-10 at Barangay Hall. 9AM - 12PM. Registration required.",
         category: "health",
         isNew: true
     },
     {
         id: 2,
-        title: "🏆 Barangay Clean-Up Drive",
-        date: "December 20, 2025",
-        description: "Join us in making Barangay Mabuhay clean and green! Assembly at 7AM.",
+        title: "🌿 Clean and Green Project",
+        date: "May 25, 2026",
+        description: "Community-wide clean-up drive. Assembly at 7AM at Barangay Plaza. Bring your own gloves.",
+        category: "event",
+        isNew: true
+    },
+    {
+        id: 3,
+        title: "🚫 Anti-Drug Abuse Council Meeting",
+        date: "May 22, 2026",
+        description: "Monthly ADAC meeting at Barangay Conference Room. 2PM. All barangay officials required to attend.",
+        category: "meeting",
+        isNew: false
+    },
+    {
+        id: 4,
+        title: "📚 Alternative Learning System (ALS)",
+        date: "June 1, 2026",
+        description: "Enrollment for ALS is now open. For out-of-school youth and adults. Register at Barangay Hall.",
+        category: "education",
+        isNew: true
+    },
+    {
+        id: 5,
+        title: "👴 Senior Citizen and PWD Assistance",
+        date: "May 28, 2026",
+        description: "Distribution of financial assistance for senior citizens and PWDs. Bring your ID and booklet.",
+        category: "social",
+        isNew: false
+    },
+    {
+        id: 6,
+        title: "🔧 Barangay Kabuhayan Skills Training",
+        date: "June 5, 2026",
+        description: "Free skills training: Dressmaking, Cooking, and Computer Literacy. Limited slots. Register now!",
+        category: "livelihood",
+        isNew: true
+    },
+    {
+        id: 7,
+        title: "🥗 Nutrition Scholar Services",
+        date: "Every Saturday",
+        description: "Nutrition assessment and supplemental feeding for malnourished children. 8AM at Health Center.",
+        category: "health",
+        isNew: false
+    },
+    {
+        id: 8,
+        title: "💉 Free Vaccinations for Children",
+        date: "May 30, 2026",
+        description: "Free routine vaccines (BCG, HepB, Pentavalent). Bring baby's vaccination card. 8AM-3PM.",
+        category: "health",
+        isNew: true
+    },
+    {
+        id: 9,
+        title: "🦟 Dengue Prevention Campaign",
+        date: "Ongoing",
+        description: "Search and destroy mosquito breeding sites. Fogging operations every Friday in affected areas.",
+        category: "health",
+        isNew: false
+    },
+    {
+        id: 10,
+        title: "💼 Job Fair",
+        date: "June 10, 2026",
+        description: "Barangay Job Fair with local employers. Bring multiple copies of your resume. 9AM-4PM.",
+        category: "livelihood",
+        isNew: true
+    },
+    {
+        id: 11,
+        title: "🏆 Barangay Sports Fest",
+        date: "June 15-20, 2026",
+        description: "Inter-purok basketball, volleyball, and sepak takraw. Register your team at Barangay Hall.",
         category: "event",
         isNew: false
     },
     {
-        id: 3,
-        title: "📋 Census 2025",
-        date: "December 10, 2025",
-        description: "Barangay census is ongoing. Please cooperate with our enumerators.",
+        id: 12,
+        title: "📝 Census 2026",
+        date: "Ongoing",
+        description: "Barangay census is ongoing. Please cooperate with our enumerators wearing official IDs.",
         category: "announcement",
+        isNew: false
+    },
+    {
+        id: 13,
+        title: "🚸 Child Protection Seminar",
+        date: "June 8, 2026",
+        description: "Seminar on child rights and protection for parents and guardians. BCPC members will lead.",
+        category: "education",
         isNew: true
     },
     {
-        id: 4,
-        title: "💉 Anti-Dengue Campaign",
-        date: "December 25, 2025",
-        description: "Fogging operations scheduled this weekend. Keep your surroundings clean.",
+        id: 14,
+        title: "🧑‍⚕️ Free Medical Check-up",
+        date: "June 12, 2026",
+        description: "Independence Day medical mission. Free check-up, medicines, and vitamins. First come, first served.",
         category: "health",
+        isNew: true
+    },
+    {
+        id: 15,
+        title: "🤝 Barangay Assembly",
+        date: "June 25, 2026",
+        description: "Semi-annual Barangay Assembly. Discuss budget, projects, and community concerns. 8AM at Barangay Plaza.",
+        category: "meeting",
         isNew: false
     }
 ];
@@ -50,8 +138,11 @@ function loadAnnouncements() {
         // Clear existing content
         container.innerHTML = '';
         
+        // Show only first 6 announcements on homepage
+        const latestAnnouncements = announcements.slice(0, 6);
+        
         // Loop through announcements array
-        announcements.forEach(announcement => {
+        latestAnnouncements.forEach(announcement => {
             // Create a new card element using DOM manipulation
             const card = document.createElement('div');
             card.className = 'col-md-6 col-lg-4 mb-4';
@@ -78,11 +169,11 @@ function loadAnnouncements() {
         });
     }
     
-    // For announcements.html - load accordion
+    // For announcements.html - load accordion with ALL 15 announcements
     loadAccordionAnnouncements();
 }
 
-// Another DOM manipulation function for the accordion page
+// DOM manipulation function for the accordion page
 function loadAccordionAnnouncements() {
     const accordionContainer = document.getElementById('announcementAccordion');
     
@@ -96,15 +187,19 @@ function loadAccordionAnnouncements() {
                 <h2 class="accordion-header">
                     <button class="accordion-button ${index !== 0 ? 'collapsed' : ''}" type="button" 
                             data-bs-toggle="collapse" data-bs-target="#collapse${announcement.id}">
-                        <strong>${announcement.title}</strong> - ${announcement.date}
+                        <strong>${announcement.title}</strong> - <span class="text-muted">${announcement.date}</span>
+                        ${announcement.isNew ? ' <span class="badge bg-danger ms-2">NEW</span>' : ''}
                     </button>
                 </h2>
                 <div id="collapse${announcement.id}" class="accordion-collapse collapse ${index === 0 ? 'show' : ''}" 
                      data-bs-parent="#announcementAccordion">
                     <div class="accordion-body">
-                        ${announcement.description}
+                        <p>${announcement.description}</p>
                         <hr>
-                        <small class="text-muted">Posted by: Barangay Captain's Office</small>
+                        <small class="text-muted">
+                            <i class="fas fa-tag"></i> Category: ${announcement.category} | 
+                            <i class="fas fa-user"></i> Posted by: Barangay Captain's Office
+                        </small>
                     </div>
                 </div>
             `;
@@ -159,4 +254,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     console.log("Barangay Portal is ready! 🇵🇭");
+    console.log(`Loaded ${announcements.length} announcements total`);
 });

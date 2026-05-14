@@ -23,14 +23,23 @@ A digital portal for Barangay Mabuhay that allows residents to view announcement
 ## 📁 Folder Structure
 barangay-portal/
 ├── index.html
+
 ├── announcements.html
+
 ├── request.html
+
 ├── css/
+
 │ ├── style.css
+
 │ └── barangay-theme.css
+
 ├── js/
+
 │ ├── script.js
+
 │ └── form-validation.js
+
 └── images/
 
 ## 🔧 How to Run

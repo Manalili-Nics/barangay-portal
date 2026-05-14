@@ -62,6 +62,6 @@ The `loadAnnouncements()` function demonstrates DOM manipulation by:
 This project aligns with NTC's mission by digitizing essential barangay services, making government transactions more accessible to Filipino citizens, especially those in remote areas. It embodies "malasakit" (compassion) through efficient public service delivery.
 
 ## 👤 Submitted by
-[Your Name]
+Name: Manalili, Nicole Nam-ay
 Course: NTC_PC9 - Web Development
-Instructor: Jay Vee Capiral
+Instructor: Mr. Jay Vee L. Capiral

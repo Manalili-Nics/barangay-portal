@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('reportForm');
     const successAlert = document.getElementById('reportSuccessAlert');
-    
     const modalElement = document.getElementById('reportModal');
     let modal = null;
     
@@ -34,14 +33,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 const modalMessage = document.getElementById('reportModalMessage');
                 if (modalMessage) {
-                    modalMessage.innerHTML = `
-                        <p><strong>Thank you, ${escapeHtml(formData.reporterName)}!</strong></p>
-                        <p>Your report regarding <strong>${escapeHtml(formData.issueType)}</strong> has been submitted.</p>
-                        <p>Location: ${escapeHtml(formData.issueLocation)}</p>
-                        <p class="text-muted small">Report ID: REP-${Date.now()}</p>
-                        <hr>
-                        <p class="text-muted small">Barangay officials will address this within 3-5 business days.</p>
-                    `;
+                    modalMessage.innerHTML = '<p><strong>Thank you, ' + escapeHtml(formData.reporterName) + '!</strong></p>' +
+                        '<p>Your report regarding <strong>' + escapeHtml(formData.issueType) + '</strong> has been submitted.</p>' +
+                        '<p>Location: ' + escapeHtml(formData.issueLocation) + '</p>' +
+                        '<p class="text-muted small">Report ID: REP-' + Date.now() + '</p>' +
+                        '<hr>' +
+                        '<p class="text-muted small">Barangay officials will address this within 3-5 business days.</p>';
                 }
                 
                 if (modal) {
@@ -54,11 +51,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 form.reset();
                 
-                document.querySelectorAll('.is-valid').forEach(el => {
+                document.querySelectorAll('.is-valid').forEach(function(el) {
                     el.classList.remove('is-valid');
                 });
                 
-                setTimeout(() => {
+                setTimeout(function() {
                     if (successAlert) {
                         successAlert.classList.add('d-none');
                     }
@@ -71,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         isSubmitting = false;
                     }, { once: true });
                 } else {
-                    setTimeout(() => {
+                    setTimeout(function() {
                         isSubmitting = false;
                     }, 1000);
                 }
@@ -114,17 +111,17 @@ function validateReportForm() {
     }
     
     const contactPattern = /^[0-9]{10,11}$/;
+    const cleanNumber = reporterContact.value.replace(/[^0-9]/g, '');
     if (!reporterContact.value.trim()) {
         showReportError(reporterContact, 'Please enter your contact number');
         isValid = false;
-    } else if (!contactPattern.test(reporterContact.value.replace(/[^0-9]/g, ''))) {
+    } else if (!contactPattern.test(cleanNumber)) {
         showReportError(reporterContact, 'Please enter a valid 10-11 digit number');
         isValid = false;
     } else {
         clearReportError(reporterContact);
     }
     
-    // Issue type validation
     if (!issueType.value) {
         showReportError(issueType, 'Please select an issue type');
         isValid = false;

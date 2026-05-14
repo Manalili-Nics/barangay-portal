@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('certificateForm');
     const successAlert = document.getElementById('successAlert');
-    
     const modalElement = document.getElementById('confirmationModal');
     let modal = null;
     
@@ -33,14 +32,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 const modalMessage = document.getElementById('modalMessage');
                 if (modalMessage) {
-                    modalMessage.innerHTML = `
-                        <p><strong>Thank you, ${escapeHtml(formData.fullName)}!</strong></p>
-                        <p>Your request for <strong>${escapeHtml(formData.certificateType)}</strong> has been received.</p>
-                        <p>You will receive a confirmation at <strong>${escapeHtml(formData.email)}</strong>.</p>
-                        <p class="text-muted small">Request ID: CERT-${Date.now()}</p>
-                        <hr>
-                        <p class="text-muted small">Please wait 2-3 business days for processing.</p>
-                    `;
+                    modalMessage.innerHTML = '<p><strong>Thank you, ' + escapeHtml(formData.fullName) + '!</strong></p>' +
+                        '<p>Your request for <strong>' + escapeHtml(formData.certificateType) + '</strong> has been received.</p>' +
+                        '<p>You will receive a confirmation at <strong>' + escapeHtml(formData.email) + '</strong>.</p>' +
+                        '<p class="text-muted small">Request ID: CERT-' + Date.now() + '</p>' +
+                        '<hr>' +
+                        '<p class="text-muted small">Please wait 2-3 business days for processing.</p>';
                 }
                 
                 if (modal) {
@@ -53,11 +50,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 form.reset();
                 
-                document.querySelectorAll('.is-valid').forEach(el => {
+                document.querySelectorAll('.is-valid').forEach(function(el) {
                     el.classList.remove('is-valid');
                 });
                 
-                setTimeout(() => {
+                setTimeout(function() {
                     if (successAlert) {
                         successAlert.classList.add('d-none');
                     }
@@ -70,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         isSubmitting = false;
                     }, { once: true });
                 } else {
-                    setTimeout(() => {
+                    setTimeout(function() {
                         isSubmitting = false;
                     }, 1000);
                 }
@@ -161,5 +158,4 @@ function saveRequestToLocal(data) {
     requests.push(data);
     localStorage.setItem('barangayRequests', JSON.stringify(requests));
     console.log('Request saved:', data);
-    console.log('Total requests:', requests.length);
 }

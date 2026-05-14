@@ -1,138 +1,171 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Report Issue - Barangay Mabuhay</title>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('reportForm');
+    const successAlert = document.getElementById('reportSuccessAlert');
+    const modalElement = document.getElementById('reportModal');
+    let modal = null;
     
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    if (modalElement) {
+        modal = new bootstrap.Modal(modalElement);
+    }
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    let isSubmitting = false;
     
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/barangay-theme.css">
-</head>
-<body>
+    if (form) {
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            if (isSubmitting) {
+                return;
+            }
+            
+            if (validateReportForm()) {
+                isSubmitting = true;
+                
+                const formData = {
+                    reporterName: document.getElementById('reporterName').value,
+                    reporterAddress: document.getElementById('reporterAddress').value,
+                    reporterContact: document.getElementById('reporterContact').value,
+                    issueType: document.getElementById('issueType').value,
+                    issueLocation: document.getElementById('issueLocation').value,
+                    issueDescription: document.getElementById('issueDescription').value,
+                    dateSubmitted: new Date().toLocaleString('en-PH')
+                };
+                
+                const modalMessage = document.getElementById('reportModalMessage');
+                if (modalMessage) {
+                    modalMessage.innerHTML = '<p><strong>Thank you, ' + escapeHtml(formData.reporterName) + '!</strong></p>' +
+                        '<p>Your report regarding <strong>' + escapeHtml(formData.issueType) + '</strong> has been submitted.</p>' +
+                        '<p>Location: ' + escapeHtml(formData.issueLocation) + '</p>' +
+                        '<p class="text-muted small">Report ID: REP-' + Date.now() + '</p>' +
+                        '<hr>' +
+                        '<p class="text-muted small">Barangay officials will address this within 3-5 business days.</p>';
+                }
+                
+                if (modal) {
+                    modal.show();
+                }
+                
+                if (successAlert) {
+                    successAlert.classList.remove('d-none');
+                }
+                
+                form.reset();
+                
+                document.querySelectorAll('.is-valid').forEach(function(el) {
+                    el.classList.remove('is-valid');
+                });
+                
+                setTimeout(function() {
+                    if (successAlert) {
+                        successAlert.classList.add('d-none');
+                    }
+                }, 5000);
+                
+                saveReportToLocal(formData);
+                
+                if (modal) {
+                    modalElement.addEventListener('hidden.bs.modal', function() {
+                        isSubmitting = false;
+                    }, { once: true });
+                } else {
+                    setTimeout(function() {
+                        isSubmitting = false;
+                    }, 1000);
+                }
+            }
+        });
+    }
+});
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
-        <div class="container">
-            <a class="navbar-brand" href="index.html">
-                <i class="fas fa-landmark"></i> Barangay Mabuhay
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-home"></i> Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="announcements.html"><i class="fas fa-bullhorn"></i> Announcements</a></li>
-                    <li class="nav-item"><a class="nav-link" href="request.html"><i class="fas fa-file-alt"></i> Request Certificate</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="report.html"><i class="fas fa-exclamation-triangle"></i> Report Issue</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
 
-    <main>
-        <div class="container my-5">
-            <div class="row">
-                <div class="col-md-8 mx-auto">
-                    <div class="card shadow">
-                        <div class="card-header bg-danger text-white">
-                            <h3 class="mb-0"><i class="fas fa-exclamation-circle"></i> Report a Community Issue</h3>
-                        </div>
-                        <div class="card-body">
-                            
-                            <div id="reportSuccessAlert" class="alert alert-success d-none">
-                                <i class="fas fa-check-circle"></i> ✅ Your report has been submitted! Barangay officials will address this within 3-5 business days.
-                            </div>
-
-                            <form id="reportForm">
-                                <div class="mb-3">
-                                    <label for="reporterName" class="form-label">Full Name *</label>
-                                    <input type="text" class="form-control" id="reporterName" required>
-                                    <div class="invalid-feedback">Please enter your full name</div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="reporterAddress" class="form-label">Address / Purok *</label>
-                                    <input type="text" class="form-control" id="reporterAddress" required placeholder="e.g., Purok 3, near Barangay Hall">
-                                    <div class="invalid-feedback">Please enter your address or purok</div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="reporterContact" class="form-label">Contact Number *</label>
-                                    <input type="tel" class="form-control" id="reporterContact" required placeholder="e.g., 09123456789">
-                                    <div class="invalid-feedback">Please enter a valid 10-11 digit contact number</div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="issueType" class="form-label">Type of Issue *</label>
-                                    <select class="form-select" id="issueType" required>
-                                        <option value="">Select issue type</option>
-                                        <option value="Road/Street Repair">🚧 Road/Street Repair</option>
-                                        <option value="Drainage/Flooding">💧 Drainage/Flooding</option>
-                                        <option value="Garbage Collection">🗑️ Garbage Collection</option>
-                                        <option value="Street Lighting">💡 Street Lighting</option>
-                                        <option value="Noise Complaint">🔊 Noise Complaint</option>
-                                        <option value="Security Concern">🚔 Security Concern</option>
-                                        <option value="Other">📌 Other</option>
-                                    </select>
-                                    <div class="invalid-feedback">Please select an issue type</div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="issueLocation" class="form-label">Specific Location *</label>
-                                    <input type="text" class="form-control" id="issueLocation" required placeholder="e.g., Corner of Mabini St., near Barangay Hall">
-                                    <div class="invalid-feedback">Please provide the specific location</div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="issueDescription" class="form-label">Description of Issue *</label>
-                                    <textarea class="form-control" id="issueDescription" rows="4" required placeholder="Please describe the issue in detail..."></textarea>
-                                    <div class="invalid-feedback">Please describe the issue (at least 10 characters)</div>
-                                </div>
-
-                                <button type="submit" class="btn btn-danger w-100">
-                                    <i class="fas fa-paper-plane"></i> Submit Report
-                                </button>
-                            </form>
-
-                            <div class="modal fade" id="reportModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="true" aria-labelledby="reportModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header bg-danger text-white">
-                                            <h5 class="modal-title" id="reportModalLabel">
-                                                <i class="fas fa-check-circle"></i> Report Submitted
-                                            </h5>
-                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body" id="reportModalMessage">
-                                            Your issue has been reported!
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
-                                                <i class="fas fa-check"></i> OK
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <footer class="bg-dark text-white text-center py-4">
-        <div class="container">
-            <p>&copy; 2025 Barangay Mabuhay. Serving the Republic of the Philippines with pride.</p>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+function validateReportForm() {
+    let isValid = true;
     
-    <script src="js/report-validation.js"></script>
-</body>
-</html>
+    const reporterName = document.getElementById('reporterName');
+    const reporterAddress = document.getElementById('reporterAddress');
+    const reporterContact = document.getElementById('reporterContact');
+    const issueType = document.getElementById('issueType');
+    const issueLocation = document.getElementById('issueLocation');
+    const issueDescription = document.getElementById('issueDescription');
+    
+    if (!reporterName.value.trim()) {
+        showReportError(reporterName, 'Please enter your full name');
+        isValid = false;
+    } else if (reporterName.value.trim().length < 3) {
+        showReportError(reporterName, 'Name must be at least 3 characters');
+        isValid = false;
+    } else {
+        clearReportError(reporterName);
+    }
+    
+    if (!reporterAddress.value.trim()) {
+        showReportError(reporterAddress, 'Please enter your address or purok');
+        isValid = false;
+    } else {
+        clearReportError(reporterAddress);
+    }
+    
+    const contactPattern = /^[0-9]{10,11}$/;
+    const cleanNumber = reporterContact.value.replace(/[^0-9]/g, '');
+    if (!reporterContact.value.trim()) {
+        showReportError(reporterContact, 'Please enter your contact number');
+        isValid = false;
+    } else if (!contactPattern.test(cleanNumber)) {
+        showReportError(reporterContact, 'Please enter a valid 10-11 digit number');
+        isValid = false;
+    } else {
+        clearReportError(reporterContact);
+    }
+    
+    if (!issueType.value) {
+        showReportError(issueType, 'Please select an issue type');
+        isValid = false;
+    } else {
+        clearReportError(issueType);
+    }
+    
+    if (!issueLocation.value.trim()) {
+        showReportError(issueLocation, 'Please provide the specific location');
+        isValid = false;
+    } else {
+        clearReportError(issueLocation);
+    }
+    
+    if (!issueDescription.value.trim()) {
+        showReportError(issueDescription, 'Please describe the issue');
+        isValid = false;
+    } else if (issueDescription.value.trim().length < 10) {
+        showReportError(issueDescription, 'Please provide more details (at least 10 characters)');
+        isValid = false;
+    } else {
+        clearReportError(issueDescription);
+    }
+    
+    return isValid;
+}
+
+function showReportError(field, message) {
+    field.classList.add('is-invalid');
+    field.classList.remove('is-valid');
+    const feedback = field.nextElementSibling;
+    if (feedback && feedback.classList.contains('invalid-feedback')) {
+        feedback.textContent = message;
+    }
+}
+
+function clearReportError(field) {
+    field.classList.remove('is-invalid');
+    field.classList.add('is-valid');
+}
+
+function saveReportToLocal(data) {
+    let reports = JSON.parse(localStorage.getItem('barangayReports') || '[]');
+    reports.push(data);
+    localStorage.setItem('barangayReports', JSON.stringify(reports));
+    console.log('Report saved:', data);
+}

@@ -1,7 +1,3 @@
-// BARANGAY PORTAL - JAVASCRIPT FUNCTIONALITY
-// This script demonstrates DOM manipulation for the announcements
-
-// 15 ANNOUNCEMENTS as requested
 const announcements = [
     {
         id: 1,
@@ -125,29 +121,20 @@ const announcements = [
     }
 ];
 
-// FUNCTION FOR VIDEO PRESENTATION:
-// This function demonstrates DOM manipulation - UPDATING PAGE WITHOUT REFRESH
 function loadAnnouncements() {
     console.log("Loading announcements dynamically...");
     
-    // Get the container element from the DOM
     const container = document.getElementById('announcementContainer');
     
-    // Check if container exists (homepage)
     if (container) {
-        // Clear existing content
         container.innerHTML = '';
         
-        // Show only first 6 announcements on homepage
         const latestAnnouncements = announcements.slice(0, 6);
         
-        // Loop through announcements array
         latestAnnouncements.forEach(announcement => {
-            // Create a new card element using DOM manipulation
             const card = document.createElement('div');
             card.className = 'col-md-6 col-lg-4 mb-4';
             
-            // Set inner HTML of the card
             card.innerHTML = `
                 <div class="card h-100">
                     <div class="card-body">
@@ -164,16 +151,13 @@ function loadAnnouncements() {
                 </div>
             `;
             
-            // Append the card to the container
             container.appendChild(card);
         });
     }
     
-    // For announcements.html - load accordion with ALL 15 announcements
     loadAccordionAnnouncements();
 }
 
-// DOM manipulation function for the accordion page
 function loadAccordionAnnouncements() {
     const accordionContainer = document.getElementById('announcementAccordion');
     
@@ -208,7 +192,6 @@ function loadAccordionAnnouncements() {
     }
 }
 
-// Function to show details (for demo)
 function showAnnouncementDetails(id) {
     const announcement = announcements.find(a => a.id === id);
     if (announcement) {
@@ -216,7 +199,6 @@ function showAnnouncementDetails(id) {
     }
 }
 
-// Live clock update - another DOM manipulation example
 function updateLiveDateTime() {
     const clockElement = document.getElementById('liveClock');
     if (clockElement) {
@@ -230,7 +212,6 @@ function updateLiveDateTime() {
     }
 }
 
-// Search/Filter functionality (DOM manipulation)
 function filterAnnouncements(category) {
     const cards = document.querySelectorAll('#announcementContainer .col-md-6');
     
@@ -244,11 +225,9 @@ function filterAnnouncements(category) {
     });
 }
 
-// Load announcements when page loads
 document.addEventListener('DOMContentLoaded', function() {
     loadAnnouncements();
     
-    // Start live clock if element exists
     if (document.getElementById('liveClock')) {
         setInterval(updateLiveDateTime, 1000);
     }

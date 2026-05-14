@@ -1,17 +1,27 @@
-// FORM VALIDATION FOR CERTIFICATE REQUESTS
-
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('certificateForm');
     const successAlert = document.getElementById('successAlert');
-    const modal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+    
+    const modalElement = document.getElementById('confirmationModal');
+    let modal = null;
+    
+    if (modalElement) {
+        modal = new bootstrap.Modal(modalElement);
+    }
+    
+    let isSubmitting = false;
     
     if (form) {
         form.addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent actual form submission
+            event.preventDefault();
             
-            // Validate the form
+            if (isSubmitting) {
+                return;
+            }
+            
             if (validateForm()) {
-                // Get form data
+                isSubmitting = true;
+                
                 const formData = {
                     fullName: document.getElementById('fullName').value,
                     address: document.getElementById('address').value,
@@ -21,54 +31,69 @@ document.addEventListener('DOMContentLoaded', function() {
                     dateSubmitted: new Date().toLocaleString('en-PH')
                 };
                 
-                // Show modal with confirmation
                 const modalMessage = document.getElementById('modalMessage');
-                modalMessage.innerHTML = `
-                    <p><strong>Thank you, ${formData.fullName}!</strong></p>
-                    <p>Your request for <strong>${formData.certificateType}</strong> has been received.</p>
-                    <p>You will receive a confirmation at <strong>${formData.email}</strong>.</p>
-                    <p class="text-muted small">Request ID: CERT-${Date.now()}</p>
-                    <hr>
-                    <p class="text-muted small">Please wait 2-3 business days for processing.</p>
-                `;
+                if (modalMessage) {
+                    modalMessage.innerHTML = `
+                        <p><strong>Thank you, ${escapeHtml(formData.fullName)}!</strong></p>
+                        <p>Your request for <strong>${escapeHtml(formData.certificateType)}</strong> has been received.</p>
+                        <p>You will receive a confirmation at <strong>${escapeHtml(formData.email)}</strong>.</p>
+                        <p class="text-muted small">Request ID: CERT-${Date.now()}</p>
+                        <hr>
+                        <p class="text-muted small">Please wait 2-3 business days for processing.</p>
+                    `;
+                }
                 
-                modal.show();
+                if (modal) {
+                    modal.show();
+                }
                 
-                // Show success alert
-                successAlert.classList.remove('d-none');
+                if (successAlert) {
+                    successAlert.classList.remove('d-none');
+                }
                 
-                // Reset form
                 form.reset();
                 
-                // Remove validation styling
                 document.querySelectorAll('.is-valid').forEach(el => {
                     el.classList.remove('is-valid');
                 });
                 
-                // Hide alert after 5 seconds
                 setTimeout(() => {
-                    successAlert.classList.add('d-none');
+                    if (successAlert) {
+                        successAlert.classList.add('d-none');
+                    }
                 }, 5000);
                 
-                // Save to localStorage (simulated database)
                 saveRequestToLocal(formData);
+                
+                if (modal) {
+                    modalElement.addEventListener('hidden.bs.modal', function() {
+                        isSubmitting = false;
+                    }, { once: true });
+                } else {
+                    setTimeout(() => {
+                        isSubmitting = false;
+                    }, 1000);
+                }
             }
         });
     }
 });
 
-// Validation function
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 function validateForm() {
     let isValid = true;
     
-    // Get all required fields
     const fullName = document.getElementById('fullName');
     const address = document.getElementById('address');
     const email = document.getElementById('email');
     const certificateType = document.getElementById('certificateType');
     const purpose = document.getElementById('purpose');
     
-    // Name validation
     if (!fullName.value.trim()) {
         showError(fullName, 'Please enter your full name');
         isValid = false;
@@ -79,7 +104,6 @@ function validateForm() {
         clearError(fullName);
     }
     
-    // Address validation
     if (!address.value.trim()) {
         showError(address, 'Please enter your address');
         isValid = false;
@@ -87,7 +111,6 @@ function validateForm() {
         clearError(address);
     }
     
-    // Email validation (regex pattern)
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email.value.trim()) {
         showError(email, 'Please enter your email address');
@@ -99,7 +122,6 @@ function validateForm() {
         clearError(email);
     }
     
-    // Certificate type validation
     if (!certificateType.value) {
         showError(certificateType, 'Please select a certificate type');
         isValid = false;
@@ -107,7 +129,6 @@ function validateForm() {
         clearError(certificateType);
     }
     
-    // Purpose validation
     if (!purpose.value.trim()) {
         showError(purpose, 'Please state the purpose of your request');
         isValid = false;

@@ -1,15 +1,27 @@
-// FORM VALIDATION FOR REPORT ISSUES
-
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('reportForm');
     const successAlert = document.getElementById('reportSuccessAlert');
-    const modal = new bootstrap.Modal(document.getElementById('reportModal'));
+    
+    const modalElement = document.getElementById('reportModal');
+    let modal = null;
+    
+    if (modalElement) {
+        modal = new bootstrap.Modal(modalElement);
+    }
+    
+    let isSubmitting = false;
     
     if (form) {
         form.addEventListener('submit', function(event) {
             event.preventDefault();
             
+            if (isSubmitting) {
+                return;
+            }
+            
             if (validateReportForm()) {
+                isSubmitting = true;
+                
                 const formData = {
                     reporterName: document.getElementById('reporterName').value,
                     reporterAddress: document.getElementById('reporterAddress').value,
@@ -21,17 +33,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 };
                 
                 const modalMessage = document.getElementById('reportModalMessage');
-                modalMessage.innerHTML = `
-                    <p><strong>Thank you, ${formData.reporterName}!</strong></p>
-                    <p>Your report regarding <strong>${formData.issueType}</strong> has been submitted.</p>
-                    <p>Location: ${formData.issueLocation}</p>
-                    <p class="text-muted small">Report ID: REP-${Date.now()}</p>
-                    <hr>
-                    <p class="text-muted small">Barangay officials will address this within 3-5 business days.</p>
-                `;
+                if (modalMessage) {
+                    modalMessage.innerHTML = `
+                        <p><strong>Thank you, ${escapeHtml(formData.reporterName)}!</strong></p>
+                        <p>Your report regarding <strong>${escapeHtml(formData.issueType)}</strong> has been submitted.</p>
+                        <p>Location: ${escapeHtml(formData.issueLocation)}</p>
+                        <p class="text-muted small">Report ID: REP-${Date.now()}</p>
+                        <hr>
+                        <p class="text-muted small">Barangay officials will address this within 3-5 business days.</p>
+                    `;
+                }
                 
-                modal.show();
-                successAlert.classList.remove('d-none');
+                if (modal) {
+                    modal.show();
+                }
+                
+                if (successAlert) {
+                    successAlert.classList.remove('d-none');
+                }
+                
                 form.reset();
                 
                 document.querySelectorAll('.is-valid').forEach(el => {
@@ -39,14 +59,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 
                 setTimeout(() => {
-                    successAlert.classList.add('d-none');
+                    if (successAlert) {
+                        successAlert.classList.add('d-none');
+                    }
                 }, 5000);
                 
                 saveReportToLocal(formData);
+                
+                if (modal) {
+                    modalElement.addEventListener('hidden.bs.modal', function() {
+                        isSubmitting = false;
+                    }, { once: true });
+                } else {
+                    setTimeout(() => {
+                        isSubmitting = false;
+                    }, 1000);
+                }
             }
         });
     }
 });
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
 
 function validateReportForm() {
     let isValid = true;
@@ -58,7 +96,6 @@ function validateReportForm() {
     const issueLocation = document.getElementById('issueLocation');
     const issueDescription = document.getElementById('issueDescription');
     
-    // Name validation
     if (!reporterName.value.trim()) {
         showReportError(reporterName, 'Please enter your full name');
         isValid = false;
@@ -69,7 +106,6 @@ function validateReportForm() {
         clearReportError(reporterName);
     }
     
-    // Address validation
     if (!reporterAddress.value.trim()) {
         showReportError(reporterAddress, 'Please enter your address or purok');
         isValid = false;
@@ -77,7 +113,6 @@ function validateReportForm() {
         clearReportError(reporterAddress);
     }
     
-    // Contact number validation
     const contactPattern = /^[0-9]{10,11}$/;
     if (!reporterContact.value.trim()) {
         showReportError(reporterContact, 'Please enter your contact number');
@@ -97,7 +132,6 @@ function validateReportForm() {
         clearReportError(issueType);
     }
     
-    // Location validation
     if (!issueLocation.value.trim()) {
         showReportError(issueLocation, 'Please provide the specific location');
         isValid = false;
@@ -105,7 +139,6 @@ function validateReportForm() {
         clearReportError(issueLocation);
     }
     
-    // Description validation
     if (!issueDescription.value.trim()) {
         showReportError(issueDescription, 'Please describe the issue');
         isValid = false;

@@ -1,5 +1,3 @@
-/* Barangay Theme Colors - Filipino-inspired */
-
 :root {
     --barangay-green: #2e7d32;
     --barangay-gold: #ffc107;
@@ -7,12 +5,10 @@
     --barangay-blue: #1976d2;
 }
 
-/* Header gradient */
 header.bg-primary {
     background: linear-gradient(135deg, var(--barangay-green), var(--barangay-blue));
 }
 
-/* Badge for new announcements */
 .badge-new {
     background-color: var(--barangay-red);
     animation: pulse 2s infinite;
@@ -24,24 +20,20 @@ header.bg-primary {
     100% { opacity: 1; }
 }
 
-/* Filipino flag accent */
 .ph-flag-accent {
     width: 100%;
     height: 5px;
     background: linear-gradient(90deg, #0038a8 0%, #0038a8 50%, #ce1126 50%, #ce1126 100%);
 }
 
-/* Card borders */
 .card {
     border-top: 4px solid var(--barangay-green);
 }
 
-/* Navbar brand */
 .navbar-brand {
     font-weight: bold;
 }
 
-/* Footer styling */
 footer {
     background-color: #1a1a1a !important;
 }

@@ -6,7 +6,9 @@
     <title>Report Issue - Barangay Mabuhay</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/barangay-theme.css">
 </head>
@@ -42,7 +44,7 @@
                         <div class="card-body">
                             
                             <div id="reportSuccessAlert" class="alert alert-success d-none">
-                                ✅ Your report has been submitted! Barangay officials will address this within 3-5 business days.
+                                <i class="fas fa-check-circle"></i> ✅ Your report has been submitted! Barangay officials will address this within 3-5 business days.
                             </div>
 
                             <form id="reportForm">
@@ -54,27 +56,27 @@
 
                                 <div class="mb-3">
                                     <label for="reporterAddress" class="form-label">Address / Purok *</label>
-                                    <input type="text" class="form-control" id="reporterAddress" required>
+                                    <input type="text" class="form-control" id="reporterAddress" required placeholder="e.g., Purok 3, near Barangay Hall">
                                     <div class="invalid-feedback">Please enter your address or purok</div>
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="reporterContact" class="form-label">Contact Number *</label>
-                                    <input type="tel" class="form-control" id="reporterContact" required>
-                                    <div class="invalid-feedback">Please enter a valid contact number</div>
+                                    <input type="tel" class="form-control" id="reporterContact" required placeholder="e.g., 09123456789">
+                                    <div class="invalid-feedback">Please enter a valid 10-11 digit contact number</div>
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="issueType" class="form-label">Type of Issue *</label>
                                     <select class="form-select" id="issueType" required>
                                         <option value="">Select issue type</option>
-                                        <option value="Road/Street Repair">Road/Street Repair</option>
-                                        <option value="Drainage/Flooding">Drainage/Flooding</option>
-                                        <option value="Garbage Collection">Garbage Collection</option>
-                                        <option value="Street Lighting">Street Lighting</option>
-                                        <option value="Noise Complaint">Noise Complaint</option>
-                                        <option value="Security Concern">Security Concern</option>
-                                        <option value="Other">Other</option>
+                                        <option value="Road/Street Repair">🚧 Road/Street Repair</option>
+                                        <option value="Drainage/Flooding">💧 Drainage/Flooding</option>
+                                        <option value="Garbage Collection">🗑️ Garbage Collection</option>
+                                        <option value="Street Lighting">💡 Street Lighting</option>
+                                        <option value="Noise Complaint">🔊 Noise Complaint</option>
+                                        <option value="Security Concern">🚔 Security Concern</option>
+                                        <option value="Other">📌 Other</option>
                                     </select>
                                     <div class="invalid-feedback">Please select an issue type</div>
                                 </div>
@@ -96,19 +98,22 @@
                                 </button>
                             </form>
 
-                            <!-- Modal for report confirmation -->
-                            <div class="modal fade" id="reportModal" tabindex="-1">
-                                <div class="modal-dialog">
+                            <div class="modal fade" id="reportModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="true" aria-labelledby="reportModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header bg-danger text-white">
-                                            <h5 class="modal-title">Report Submitted</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            <h5 class="modal-title" id="reportModalLabel">
+                                                <i class="fas fa-check-circle"></i> Report Submitted
+                                            </h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body" id="reportModalMessage">
                                             Your issue has been reported!
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                                                <i class="fas fa-check"></i> OK
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -127,6 +132,7 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
     <script src="js/report-validation.js"></script>
 </body>
 </html>

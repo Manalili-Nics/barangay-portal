@@ -23,14 +23,23 @@ A digital portal for Barangay Mabuhay that allows residents to view announcement
 ## 📁 Folder Structure
 barangay-portal/
 ├── index.html
+
 ├── announcements.html
+
 ├── request.html
+
 ├── css/
+
 │ ├── style.css
+
 │ └── barangay-theme.css
+
 ├── js/
+
 │ ├── script.js
+
 │ └── form-validation.js
+
 └── images/
 
 ## 🔧 How to Run
@@ -53,6 +62,6 @@ The `loadAnnouncements()` function demonstrates DOM manipulation by:
 This project aligns with NTC's mission by digitizing essential barangay services, making government transactions more accessible to Filipino citizens, especially those in remote areas. It embodies "malasakit" (compassion) through efficient public service delivery.
 
 ## 👤 Submitted by
-[Your Name]
+Name: Manalili, Nicole Nam-ay
 Course: NTC_PC9 - Web Development
-Instructor: Jay Vee Capiral
+Instructor: Mr. Jay Vee L. Capiral

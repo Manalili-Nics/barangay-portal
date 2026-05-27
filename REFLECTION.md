@@ -30,7 +30,7 @@ This barangay portal is not just a school project - it is a practical tool that,
 
 ---
 
-**Submitted by:** Nicole Manaili
+**Submitted by:** Nicole Manalili
 **Course:** NTC_PC9 - Web Development
-**Instructor:** Jay Vee Capiral
-**Date:** May 2026
+**Instructor:** Mr. Jay Vee L. Capiral
+**Date:** May 14, 2026

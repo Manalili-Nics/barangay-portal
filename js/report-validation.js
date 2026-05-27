@@ -1,86 +1,69 @@
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('reportForm');
-    const successAlert = document.getElementById('reportSuccessAlert');
-    const modalElement = document.getElementById('reportModal');
-    let modal = null;
     
-    if (modalElement) {
-        modal = new bootstrap.Modal(modalElement);
-    }
-    
-    let isSubmitting = false;
+    loadReportsTable();
     
     if (form) {
         form.addEventListener('submit', function(event) {
             event.preventDefault();
             
-            if (isSubmitting) {
-                return;
-            }
-            
             if (validateReportForm()) {
-                isSubmitting = true;
+                const reporterName = document.getElementById('reporterName').value;
+                const issueType = document.getElementById('issueType').value;
+                const issueLocation = document.getElementById('issueLocation').value;
+                const reporterAddress = document.getElementById('reporterAddress').value;
+                const reporterContact = document.getElementById('reporterContact').value;
+                const issueDescription = document.getElementById('issueDescription').value;
+                const dateTime = new Date().toLocaleString('en-PH');
                 
-                const formData = {
-                    reporterName: document.getElementById('reporterName').value,
-                    reporterAddress: document.getElementById('reporterAddress').value,
-                    reporterContact: document.getElementById('reporterContact').value,
-                    issueType: document.getElementById('issueType').value,
-                    issueLocation: document.getElementById('issueLocation').value,
-                    issueDescription: document.getElementById('issueDescription').value,
-                    dateSubmitted: new Date().toLocaleString('en-PH')
-                };
+                showCustomPopup('Report Submitted', 
+                    'Thank you, ' + reporterName + '!<br><br>' +
+                    'Your report regarding <strong>' + issueType + '</strong> has been received.<br><br>' +
+                    'Location: <strong>' + issueLocation + '</strong><br><br>' +
+                    'Report ID: REP-' + Date.now() + '<br><br>' +
+                    'Barangay officials will respond within 3-5 days.',
+                    'danger');
                 
-                const modalMessage = document.getElementById('reportModalMessage');
-                if (modalMessage) {
-                    modalMessage.innerHTML = '<p><strong>Thank you, ' + escapeHtml(formData.reporterName) + '!</strong></p>' +
-                        '<p>Your report regarding <strong>' + escapeHtml(formData.issueType) + '</strong> has been submitted.</p>' +
-                        '<p>Location: ' + escapeHtml(formData.issueLocation) + '</p>' +
-                        '<p class="text-muted small">Report ID: REP-' + Date.now() + '</p>' +
-                        '<hr>' +
-                        '<p class="text-muted small">Barangay officials will address this within 3-5 business days.</p>';
-                }
-                
-                if (modal) {
-                    modal.show();
-                }
-                
-                if (successAlert) {
-                    successAlert.classList.remove('d-none');
-                }
+                saveReportToLocal(reporterName, reporterAddress, reporterContact, issueType, issueLocation, issueDescription, dateTime);
                 
                 form.reset();
                 
-                document.querySelectorAll('.is-valid').forEach(function(el) {
-                    el.classList.remove('is-valid');
+                document.querySelectorAll('.is-valid, .is-invalid').forEach(function(el) {
+                    el.classList.remove('is-valid', 'is-invalid');
                 });
-                
-                setTimeout(function() {
-                    if (successAlert) {
-                        successAlert.classList.add('d-none');
-                    }
-                }, 5000);
-                
-                saveReportToLocal(formData);
-                
-                if (modal) {
-                    modalElement.addEventListener('hidden.bs.modal', function() {
-                        isSubmitting = false;
-                    }, { once: true });
-                } else {
-                    setTimeout(function() {
-                        isSubmitting = false;
-                    }, 1000);
-                }
             }
         });
     }
 });
 
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+function showCustomPopup(title, message, type) {
+    let existingPopup = document.querySelector('.custom-popup');
+    if (existingPopup) {
+        existingPopup.remove();
+    }
+    
+    const popup = document.createElement('div');
+    popup.className = 'custom-popup ' + type;
+    popup.innerHTML = `
+        <div class="custom-popup-content">
+            <div class="custom-popup-header ${type}">
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i>
+                <span>${title}</span>
+            </div>
+            <div class="custom-popup-body">
+                ${message}
+            </div>
+            <div class="custom-popup-footer">
+                <button class="custom-popup-btn ${type}" onclick="this.closest('.custom-popup').remove()">OK</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(popup);
+    
+    setTimeout(function() {
+        popup.classList.add('show');
+    }, 10);
 }
 
 function validateReportForm() {
@@ -94,62 +77,62 @@ function validateReportForm() {
     const issueDescription = document.getElementById('issueDescription');
     
     if (!reporterName.value.trim()) {
-        showReportError(reporterName, 'Please enter your full name');
+        showError(reporterName, 'Please enter your full name');
         isValid = false;
     } else if (reporterName.value.trim().length < 3) {
-        showReportError(reporterName, 'Name must be at least 3 characters');
+        showError(reporterName, 'Name must be at least 3 characters');
         isValid = false;
     } else {
-        clearReportError(reporterName);
+        clearError(reporterName);
     }
     
     if (!reporterAddress.value.trim()) {
-        showReportError(reporterAddress, 'Please enter your address or purok');
+        showError(reporterAddress, 'Please enter your address or purok');
         isValid = false;
     } else {
-        clearReportError(reporterAddress);
+        clearError(reporterAddress);
     }
     
     const contactPattern = /^[0-9]{10,11}$/;
     const cleanNumber = reporterContact.value.replace(/[^0-9]/g, '');
     if (!reporterContact.value.trim()) {
-        showReportError(reporterContact, 'Please enter your contact number');
+        showError(reporterContact, 'Please enter your contact number');
         isValid = false;
     } else if (!contactPattern.test(cleanNumber)) {
-        showReportError(reporterContact, 'Please enter a valid 10-11 digit number');
+        showError(reporterContact, 'Please enter a valid 10-11 digit number');
         isValid = false;
     } else {
-        clearReportError(reporterContact);
+        clearError(reporterContact);
     }
     
     if (!issueType.value) {
-        showReportError(issueType, 'Please select an issue type');
+        showError(issueType, 'Please select an issue type');
         isValid = false;
     } else {
-        clearReportError(issueType);
+        clearError(issueType);
     }
     
     if (!issueLocation.value.trim()) {
-        showReportError(issueLocation, 'Please provide the specific location');
+        showError(issueLocation, 'Please provide the specific location');
         isValid = false;
     } else {
-        clearReportError(issueLocation);
+        clearError(issueLocation);
     }
     
     if (!issueDescription.value.trim()) {
-        showReportError(issueDescription, 'Please describe the issue');
+        showError(issueDescription, 'Please describe the issue');
         isValid = false;
     } else if (issueDescription.value.trim().length < 10) {
-        showReportError(issueDescription, 'Please provide more details (at least 10 characters)');
+        showError(issueDescription, 'Please provide more details (at least 10 characters)');
         isValid = false;
     } else {
-        clearReportError(issueDescription);
+        clearError(issueDescription);
     }
     
     return isValid;
 }
 
-function showReportError(field, message) {
+function showError(field, message) {
     field.classList.add('is-invalid');
     field.classList.remove('is-valid');
     const feedback = field.nextElementSibling;
@@ -158,14 +141,54 @@ function showReportError(field, message) {
     }
 }
 
-function clearReportError(field) {
+function clearError(field) {
     field.classList.remove('is-invalid');
     field.classList.add('is-valid');
 }
 
-function saveReportToLocal(data) {
+function saveReportToLocal(name, address, contact, issueType, location, description, dateTime) {
     let reports = JSON.parse(localStorage.getItem('barangayReports') || '[]');
-    reports.push(data);
+    reports.unshift({ 
+        name: name, 
+        address: address,
+        contact: contact,
+        issueType: issueType, 
+        location: location,
+        description: description,
+        dateTime: dateTime,
+        id: Date.now()
+    });
     localStorage.setItem('barangayReports', JSON.stringify(reports));
-    console.log('Report saved:', data);
+    loadReportsTable();
+    console.log('Report saved');
+}
+
+function loadReportsTable() {
+    const tbody = document.getElementById('reportsTableBody');
+    if (!tbody) return;
+    
+    const reports = JSON.parse(localStorage.getItem('barangayReports') || '[]');
+    
+    if (reports.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No reports yet</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = '';
+    reports.forEach(function(report) {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${escapeHtml(report.dateTime)}</td>
+            <td><strong>${escapeHtml(report.name)}</strong></td>
+            <td>${escapeHtml(report.issueType)}</td>
+            <td>${escapeHtml(report.location)}</td>
+            <td>${escapeHtml(report.contact)}</td>
+        `;
+    });
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }

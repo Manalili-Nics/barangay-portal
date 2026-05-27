@@ -8,18 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/barangay-theme.css">
-    <style>
-        .modal {
-            z-index: 1050;
-        }
-        .modal-backdrop {
-            z-index: 1040;
-        }
-        body.modal-open {
-            overflow: hidden;
-            padding-right: 0 !important;
-        }
-    </style>
 </head>
 <body>
 
@@ -53,7 +41,7 @@
                         <div class="card-body">
                             
                             <div id="reportSuccessAlert" class="alert alert-success d-none">
-                                <i class="fas fa-check-circle"></i> Your report has been submitted! Barangay officials will address this within 3-5 business days.
+                                <i class="fas fa-check-circle"></i> Your report has been submitted!
                             </div>
 
                             <form id="reportForm">
@@ -72,7 +60,7 @@
                                 <div class="mb-3">
                                     <label for="reporterContact" class="form-label">Contact Number *</label>
                                     <input type="tel" class="form-control" id="reporterContact" required placeholder="e.g., 09123456789">
-                                    <div class="invalid-feedback">Please enter a valid 10-11 digit contact number</div>
+                                    <div class="invalid-feedback">Please enter a valid 10-11 digit number</div>
                                 </div>
 
                                 <div class="mb-3">
@@ -107,26 +95,31 @@
                                 </button>
                             </form>
 
-                            <div class="modal fade" id="reportModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="true" aria-labelledby="reportModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header bg-danger text-white">
-                                            <h5 class="modal-title" id="reportModalLabel">
-                                                <i class="fas fa-check-circle"></i> Report Submitted
-                                            </h5>
-                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body" id="reportModalMessage">
-                                            Your issue has been reported!
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
-                                                <i class="fas fa-check"></i> OK
-                                            </button>
-                                        </div>
-                                    </div>
+                            <!-- VIEW REPORTS TABLE FOR BARANGAY OFFICIALS -->
+                            <div class="table-container report-table">
+                                <div class="table-title">
+                                    <i class="fas fa-list"></i> Recent Issue Reports
+                                </div>
+                                <div style="overflow-x: auto;">
+                                    <table class="custom-table" id="reportsTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Date & Time</th>
+                                                <th>Reporter Name</th>
+                                                <th>Issue Type</th>
+                                                <th>Location</th>
+                                                <th>Contact</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="reportsTableBody">
+                                            <tr>
+                                                <td colspan="5" style="text-align: center;">No reports yet</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>

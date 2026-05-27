@@ -1,85 +1,67 @@
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('certificateForm');
-    const successAlert = document.getElementById('successAlert');
-    const modalElement = document.getElementById('confirmationModal');
-    let modal = null;
     
-    if (modalElement) {
-        modal = new bootstrap.Modal(modalElement);
-    }
-    
-    let isSubmitting = false;
+    loadRequestsTable();
     
     if (form) {
         form.addEventListener('submit', function(event) {
             event.preventDefault();
             
-            if (isSubmitting) {
-                return;
-            }
-            
             if (validateForm()) {
-                isSubmitting = true;
+                const fullName = document.getElementById('fullName').value;
+                const certificateType = document.getElementById('certificateType').value;
+                const email = document.getElementById('email').value;
+                const address = document.getElementById('address').value;
+                const purpose = document.getElementById('purpose').value;
+                const dateTime = new Date().toLocaleString('en-PH');
                 
-                const formData = {
-                    fullName: document.getElementById('fullName').value,
-                    address: document.getElementById('address').value,
-                    email: document.getElementById('email').value,
-                    certificateType: document.getElementById('certificateType').value,
-                    purpose: document.getElementById('purpose').value,
-                    dateSubmitted: new Date().toLocaleString('en-PH')
-                };
+                showCustomPopup('Request Confirmed', 
+                    'Thank you, ' + fullName + '!<br><br>' +
+                    'Your request for <strong>' + certificateType + '</strong> has been received.<br><br>' +
+                    'Confirmation will be sent to: <strong>' + email + '</strong><br><br>' +
+                    'Request ID: CERT-' + Date.now(),
+                    'success');
                 
-                const modalMessage = document.getElementById('modalMessage');
-                if (modalMessage) {
-                    modalMessage.innerHTML = '<p><strong>Thank you, ' + escapeHtml(formData.fullName) + '!</strong></p>' +
-                        '<p>Your request for <strong>' + escapeHtml(formData.certificateType) + '</strong> has been received.</p>' +
-                        '<p>You will receive a confirmation at <strong>' + escapeHtml(formData.email) + '</strong>.</p>' +
-                        '<p class="text-muted small">Request ID: CERT-' + Date.now() + '</p>' +
-                        '<hr>' +
-                        '<p class="text-muted small">Please wait 2-3 business days for processing.</p>';
-                }
-                
-                if (modal) {
-                    modal.show();
-                }
-                
-                if (successAlert) {
-                    successAlert.classList.remove('d-none');
-                }
+                saveRequestToLocal(fullName, address, email, certificateType, purpose, dateTime);
                 
                 form.reset();
                 
-                document.querySelectorAll('.is-valid').forEach(function(el) {
-                    el.classList.remove('is-valid');
+                document.querySelectorAll('.is-valid, .is-invalid').forEach(function(el) {
+                    el.classList.remove('is-valid', 'is-invalid');
                 });
-                
-                setTimeout(function() {
-                    if (successAlert) {
-                        successAlert.classList.add('d-none');
-                    }
-                }, 5000);
-                
-                saveRequestToLocal(formData);
-                
-                if (modal) {
-                    modalElement.addEventListener('hidden.bs.modal', function() {
-                        isSubmitting = false;
-                    }, { once: true });
-                } else {
-                    setTimeout(function() {
-                        isSubmitting = false;
-                    }, 1000);
-                }
             }
         });
     }
 });
 
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+function showCustomPopup(title, message, type) {
+    let existingPopup = document.querySelector('.custom-popup');
+    if (existingPopup) {
+        existingPopup.remove();
+    }
+    
+    const popup = document.createElement('div');
+    popup.className = 'custom-popup ' + type;
+    popup.innerHTML = `
+        <div class="custom-popup-content">
+            <div class="custom-popup-header ${type}">
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i>
+                <span>${title}</span>
+            </div>
+            <div class="custom-popup-body">
+                ${message}
+            </div>
+            <div class="custom-popup-footer">
+                <button class="custom-popup-btn ${type}" onclick="this.closest('.custom-popup').remove()">OK</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(popup);
+    
+    setTimeout(function() {
+        popup.classList.add('show');
+    }, 10);
 }
 
 function validateForm() {
@@ -113,7 +95,7 @@ function validateForm() {
         showError(email, 'Please enter your email address');
         isValid = false;
     } else if (!emailPattern.test(email.value)) {
-        showError(email, 'Please enter a valid email (e.g., name@example.com)');
+        showError(email, 'Please enter a valid email');
         isValid = false;
     } else {
         clearError(email);
@@ -153,9 +135,47 @@ function clearError(field) {
     field.classList.add('is-valid');
 }
 
-function saveRequestToLocal(data) {
+function saveRequestToLocal(name, address, email, certType, purpose, dateTime) {
     let requests = JSON.parse(localStorage.getItem('barangayRequests') || '[]');
-    requests.push(data);
+    requests.unshift({ 
+        name: name, 
+        address: address,
+        email: email, 
+        certificateType: certType, 
+        purpose: purpose,
+        dateTime: dateTime,
+        id: Date.now()
+    });
     localStorage.setItem('barangayRequests', JSON.stringify(requests));
-    console.log('Request saved:', data);
+    loadRequestsTable();
+    console.log('Request saved');
+}
+
+function loadRequestsTable() {
+    const tbody = document.getElementById('requestsTableBody');
+    if (!tbody) return;
+    
+    const requests = JSON.parse(localStorage.getItem('barangayRequests') || '[]');
+    
+    if (requests.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No requests yet</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = '';
+    requests.forEach(function(request) {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${escapeHtml(request.dateTime)}</td>
+            <td><strong>${escapeHtml(request.name)}</strong></td>
+            <td>${escapeHtml(request.certificateType)}</td>
+            <td>${escapeHtml(request.email)}</td>
+        `;
+    });
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }

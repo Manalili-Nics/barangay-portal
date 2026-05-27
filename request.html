@@ -8,18 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/barangay-theme.css">
-    <style>
-        .modal {
-            z-index: 1050;
-        }
-        .modal-backdrop {
-            z-index: 1040;
-        }
-        body.modal-open {
-            overflow: hidden;
-            padding-right: 0 !important;
-        }
-    </style>
 </head>
 <body>
 
@@ -53,7 +41,7 @@
                         <div class="card-body">
                             
                             <div id="successAlert" class="alert alert-success d-none">
-                                <i class="fas fa-check-circle"></i> Your request has been submitted successfully! Please wait 2-3 business days.
+                                <i class="fas fa-check-circle"></i> Your request has been submitted successfully!
                             </div>
 
                             <form id="certificateForm">
@@ -83,16 +71,16 @@
                                         <option value="Certificate of Indigency">Certificate of Indigency</option>
                                         <option value="Residency Certificate">Residency Certificate</option>
                                         <option value="Certificate of Good Moral Character">Certificate of Good Moral Character</option>
-                                        <option value="Barangay Business Clearance/Permit">Barangay Business Clearance/Permit</option>
-                                        <option value="Certificate of First Time Job Seeker">Certificate of First Time Job Seeker</option>
+                                        <option value="Barangay Business Clearance">Barangay Business Clearance</option>
+                                        <option value="First Time Job Seeker">First Time Job Seeker</option>
                                     </select>
                                     <div class="invalid-feedback">Please select a certificate type</div>
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="purpose" class="form-label">Purpose *</label>
-                                    <textarea class="form-control" id="purpose" rows="3" required placeholder="e.g., For employment application, School requirement, etc."></textarea>
-                                    <div class="invalid-feedback">Please state the purpose of your request (at least 10 characters)</div>
+                                    <textarea class="form-control" id="purpose" rows="3" required placeholder="e.g., For employment application"></textarea>
+                                    <div class="invalid-feedback">Please state your purpose (at least 10 characters)</div>
                                 </div>
 
                                 <button type="submit" class="btn btn-success w-100">
@@ -100,26 +88,30 @@
                                 </button>
                             </form>
 
-                            <div class="modal fade" id="confirmationModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="true" aria-labelledby="confirmationModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header bg-success text-white">
-                                            <h5 class="modal-title" id="confirmationModalLabel">
-                                                <i class="fas fa-check-circle"></i> Request Confirmed
-                                            </h5>
-                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body" id="modalMessage">
-                                            Your request has been submitted!
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-success" data-bs-dismiss="modal">
-                                                <i class="fas fa-check"></i> OK
-                                            </button>
-                                        </div>
-                                    </div>
+                            <!-- VIEW REQUESTS TABLE FOR BARANGAY OFFICIALS -->
+                            <div class="table-container">
+                                <div class="table-title">
+                                    <i class="fas fa-clipboard-list"></i> Recent Certificate Requests
+                                </div>
+                                <div style="overflow-x: auto;">
+                                    <table class="custom-table" id="requestsTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Date & Time</th>
+                                                <th>Full Name</th>
+                                                <th>Certificate Type</th>
+                                                <th>Email</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="requestsTableBody">
+                                            <tr>
+                                                <td colspan="4" style="text-align: center;">No requests yet</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
